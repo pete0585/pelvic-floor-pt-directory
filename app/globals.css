@@ -81,3 +81,30 @@
     text-wrap: balance;
   }
 }
+
+@layer components {
+  .prose-guide {
+    @apply text-stone-500 leading-relaxed;
+  }
+  .prose-guide h2 {
+    @apply text-xl font-bold text-stone-700 mt-10 mb-4 first:mt-0;
+  }
+  .prose-guide p {
+    @apply mb-4;
+  }
+  .prose-guide ul {
+    @apply list-disc list-outside pl-5 mb-4 space-y-1.5;
+  }
+  .prose-guide ol {
+    @apply list-decimal list-outside pl-5 mb-4 space-y-3;
+  }
+  .prose-guide li {
+    @apply text-stone-500;
+  }
+  .prose-guide strong {
+    @apply font-semibold text-stone-700;
+  }
+  .prose-guide em {
+    @apply italic;
+  }
+}
