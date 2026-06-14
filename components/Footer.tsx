@@ -90,7 +90,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://www.ibclcdirectory.com" className="text-sm text-stone-400 hover:text-teal transition-colors" target="_blank" rel="noopener noreferrer">
+                <a href="https://lactationconsultantdirectory.com" className="text-sm text-stone-400 hover:text-teal transition-colors" target="_blank" rel="noopener noreferrer">
                   IBCLC Directory
                 </a>
               </li>
