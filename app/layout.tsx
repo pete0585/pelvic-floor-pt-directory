@@ -25,14 +25,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.pelvicfloordirectory.com',
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pelvicfloordirectory.com',
     siteName: 'PelvicFloorPTDirectory.com',
     title: 'Find a Pelvic Floor Physical Therapist Near You',
     description:
       'Search by condition, location, and insurance. Find a pelvic floor PT who specializes in exactly what you\'re dealing with.',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.pelvicfloordirectory.com'}/og-image.png`,
+        url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pelvicfloordirectory.com'}/og-image.png`,
         width: 1200,
         height: 630,
         alt: 'PelvicFloorPTDirectory.com — Find a Pelvic Floor PT Near You',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: 'Find a Pelvic Floor Physical Therapist Near You',
     description: 'Search by condition, location, and insurance.',
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.pelvicfloordirectory.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pelvicfloordirectory.com'),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
