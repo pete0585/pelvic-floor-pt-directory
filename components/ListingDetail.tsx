@@ -9,12 +9,14 @@ import { formatPhone, conditionLabel, certLabel } from '@/lib/utils'
 
 interface ListingDetailProps {
   listing: Listing
+  monthlyViews?: number
 }
 
-export default function ListingDetail({ listing }: ListingDetailProps) {
+export default function ListingDetail({ listing, monthlyViews = 0 }: ListingDetailProps) {
   const isVerified = listing.listing_tier === 'verified'
   const isFeatured = listing.listing_tier === 'featured'
   const isPaid = isVerified || isFeatured
+  const isClaimed = listing.listing_tier !== 'unclaimed' && listing.listing_tier != null
 
   const conditions = listing.conditions_treated ?? []
   const certifications = listing.certifications ?? []
@@ -116,7 +118,22 @@ export default function ListingDetail({ listing }: ListingDetailProps) {
             )}
           </div>
 
-          {listing.bio && (
+          {/* Gate: bio for unclaimed */}
+          {!isClaimed && (
+            <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 text-center'>
+              <p className='text-sm text-gray-500'>
+                Phone, website, and bio are only visible after this provider claims their listing.
+              </p>
+              <a
+                href={`/claim/${listing.id}`}
+                className='mt-2 inline-block text-sm font-medium text-blue-600 hover:underline'
+              >
+                Is this you? Claim your free profile →
+              </a>
+            </div>
+          )}
+
+          {isClaimed && listing.bio && (
             <div className="card p-6">
               <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                 <BookOpen className="h-4 w-4" />
@@ -167,7 +184,24 @@ export default function ListingDetail({ listing }: ListingDetailProps) {
           <div className="card p-5">
             <h2 className="font-semibold text-stone-700 mb-4">Contact & Book</h2>
 
-            {listing.booking_url && (
+            {/* Stats block for claimed listings */}
+            {isClaimed && (
+              <div className='mb-4 rounded-xl border border-blue-200 bg-blue-50 p-4'>
+                <p className='text-xs font-semibold uppercase tracking-wide text-blue-600'>Profile Activity</p>
+                <p className='mt-1 text-3xl font-bold text-blue-900'>{monthlyViews}</p>
+                <p className='text-sm text-blue-700'>people viewed your profile this month</p>
+                {listing.listing_tier === 'free' && (
+                  <p className='mt-2 text-xs text-blue-600'>
+                    0 could contact you.{' '}
+                    <a href={`/claim/${listing.id}?upgrade=true`} className='underline font-medium'>
+                      Upgrade to be reachable →
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
+
+            {isClaimed && listing.booking_url && (
               <a
                 href={listing.booking_url}
                 target="_blank"
@@ -179,7 +213,7 @@ export default function ListingDetail({ listing }: ListingDetailProps) {
               </a>
             )}
 
-            {listing.phone && (
+            {isClaimed && listing.phone && (
               <a
                 href={`tel:${listing.phone}`}
                 className="btn-secondary w-full mb-3 text-sm"
@@ -189,7 +223,7 @@ export default function ListingDetail({ listing }: ListingDetailProps) {
               </a>
             )}
 
-            {listing.website && (
+            {isClaimed && listing.website && (
               <a
                 href={listing.website}
                 target="_blank"

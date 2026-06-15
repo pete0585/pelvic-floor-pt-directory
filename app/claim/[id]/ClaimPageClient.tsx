@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ShieldCheck, Mail, CheckCircle, Activity } from 'lucide-react'
+import { createClient } from '@supabase/supabase-js'
 
 interface ClaimProps {
   listing: {
@@ -24,8 +25,32 @@ export default function ClaimPageClient({ listing }: ClaimProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
   const [verified, setVerified] = useState(false)
   const [verifyError, setVerifyError] = useState<string | null>(null)
+  const [monthlyViews, setMonthlyViews] = useState(0)
 
   const alreadyClaimed = !!listing.claimed_at && listing.listing_tier !== 'unclaimed'
+
+  useEffect(() => {
+    if (searchParams.get('upgrade') === 'true') {
+      setVerified(true)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    if (verified) {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
+      const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+      supabase
+        .from('listing_views')
+        .select('*', { count: 'exact', head: true })
+        .eq('directory_slug', 'pelvic-floor-pt')
+        .eq('listing_id', listing.id)
+        .gte('viewed_at', monthStart)
+        .then(({ count }) => setMonthlyViews(count ?? 0))
+    }
+  }, [verified, listing.id])
 
   const handleSendToken = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,23 +86,45 @@ export default function ClaimPageClient({ listing }: ClaimProps) {
 
   if (verified) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center px-4">
-        <div className="max-w-md w-full card p-10 text-center">
+      <div className="min-h-[60vh] flex items-center justify-center px-4 py-12">
+        <div className="max-w-md w-full card p-10">
           <div className="flex justify-center mb-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-teal-50">
               <CheckCircle className="h-8 w-8 text-teal" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-stone-700 mb-3">
+          <h1 className="text-2xl font-bold text-stone-700 mb-3 text-center">
             Listing claimed!
           </h1>
-          <p className="text-stone-400 mb-6">
-            You&apos;ve verified ownership of <strong>{listing.full_name}</strong>&apos;s listing.
-            You can now update your profile and upgrade to a Verified listing.
-          </p>
+
+          <div className='text-center mb-6'>
+            <div className='text-5xl font-bold text-gray-900'>{monthlyViews}</div>
+            <div className='text-gray-500 mt-1'>people viewed your profile this month</div>
+            <div className='mt-3 text-red-600 font-semibold'>
+              0 could contact you — your phone and website are hidden
+            </div>
+          </div>
+
+          <div className='space-y-3 mb-6 text-left'>
+            {[
+              ['Your phone number visible to searchers', 'They can call you directly from your listing'],
+              ['Your website linked', 'Drive traffic to your practice site'],
+              ['Your full bio displayed', 'Build trust before they reach out'],
+              ['Verified badge', 'Stand out from unclaimed profiles'],
+            ].map(([title, sub]) => (
+              <div key={title} className='flex items-start gap-3'>
+                <span className='text-green-500 text-lg leading-tight'>✓</span>
+                <div>
+                  <div className='font-medium text-gray-900'>{title}</div>
+                  <div className='text-sm text-gray-500'>{sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           <Link
             href={`/listings/${listing.id}?verified=true`}
-            className="btn-primary w-full"
+            className="btn-primary w-full text-center"
           >
             View & Upgrade My Listing
           </Link>
