@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Star, ShieldCheck } from 'lucide-react'
 import ListingDetail from '@/components/ListingDetail'
+import { ViewTracker } from '@/components/ViewTracker'
 import { getListingBySlug } from '@/lib/data'
+import { createServiceClient } from '@/lib/supabase/server'
 import { createCheckoutSession } from './actions'
 
 interface Props {
@@ -41,6 +43,16 @@ export default async function ListingPage({ params, searchParams }: Props) {
 
   const isUpgraded = verified === 'true'
 
+  const supabase = await createServiceClient()
+  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+  const { count: viewCount } = await supabase
+    .from('listing_views')
+    .select('*', { count: 'exact', head: true })
+    .eq('directory_slug', 'pelvic-floor-pt')
+    .eq('listing_id', String(listing.id))
+    .gte('viewed_at', monthStart)
+  const monthlyViews = viewCount ?? 0
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
@@ -73,6 +85,7 @@ export default async function ListingPage({ params, searchParams }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <ViewTracker listingId={String(listing.id)} directorySlug='pelvic-floor-pt' />
 
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
@@ -96,18 +109,36 @@ export default async function ListingPage({ params, searchParams }: Props) {
             </div>
           )}
 
-          <ListingDetail listing={listing} />
+          <ListingDetail listing={listing} monthlyViews={monthlyViews} />
 
           {/* Upgrade section for claimed free listings */}
           {isUpgraded && listing.listing_tier === 'free' && (
-            <div className="mt-8 card p-8 text-center border-2 border-teal-100">
-              <h2 className="text-2xl font-bold text-stone-700 mb-3">
-                Upgrade to get more patients
-              </h2>
-              <p className="text-stone-400 mb-8 max-w-lg mx-auto">
-                A Verified listing gets you priority placement in search results, a credential badge,
-                and a direct booking CTA — for $99/year. One new patient pays for it 10x over.
-              </p>
+            <div className="mt-8 card p-8 border-2 border-teal-100">
+              <div className='text-center mb-6'>
+                <div className='text-5xl font-bold text-gray-900'>{monthlyViews}</div>
+                <div className='text-gray-500 mt-1'>people viewed your profile this month</div>
+                <div className='mt-3 text-red-600 font-semibold'>
+                  0 could contact you — your phone and website are hidden
+                </div>
+              </div>
+
+              <div className='space-y-3 mb-8 text-left'>
+                {[
+                  ['Your phone number visible to searchers', 'They can call you directly from your listing'],
+                  ['Your website linked', 'Drive traffic to your practice site'],
+                  ['Your full bio displayed', 'Build trust before they reach out'],
+                  ['Verified badge', 'Stand out from unclaimed profiles'],
+                ].map(([title, sub]) => (
+                  <div key={title} className='flex items-start gap-3'>
+                    <span className='text-green-500 text-lg leading-tight'>✓</span>
+                    <div>
+                      <div className='font-medium text-gray-900'>{title}</div>
+                      <div className='text-sm text-gray-500'>{sub}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
                 <div className="rounded-2xl bg-cream-100 border-2 border-teal-200 p-6 text-left">
                   <div className="flex items-center gap-2 mb-3">
