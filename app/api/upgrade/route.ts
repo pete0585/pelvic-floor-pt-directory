@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { stripe, STRIPE_VERIFIED_PRICE_ID, STRIPE_FEATURED_PRICE_ID } from '@/lib/stripe'
+import { createCheckoutSession } from '@/lib/stripe'
 
 export async function POST(request: NextRequest) {
   let listingId: string | undefined
@@ -32,25 +32,13 @@ export async function POST(request: NextRequest) {
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.pelvicfloordirectory.com'
-    const priceId = tier === 'featured' ? STRIPE_FEATURED_PRICE_ID : STRIPE_VERIFIED_PRICE_ID
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
-      allow_promotion_codes: true,
-      customer_email: listing.email ?? undefined,
-      success_url: `${siteUrl}/claim/${listingId}?upgraded=true&tier=${tier}`,
-      cancel_url: `${siteUrl}/claim/${listingId}`,
-      metadata: {
-        listing_id: listingId,
-        plan_tier: tier,
-      },
-      subscription_data: {
-        metadata: {
-          listing_id: listingId,
-          plan_tier: tier,
-        },
-      },
+    const session = await createCheckoutSession({
+      listingId,
+      tier: tier as 'verified' | 'featured',
+      customerEmail: listing.email ?? undefined,
+      successUrl: `${siteUrl}/claim/${listingId}?upgraded=true&tier=${tier}`,
+      cancelUrl: `${siteUrl}/claim/${listingId}`,
     })
 
     return NextResponse.json({ url: session.url })
