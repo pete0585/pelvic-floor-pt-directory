@@ -53,6 +53,8 @@ export default async function ListingPage({ params, searchParams }: Props) {
     .gte('viewed_at', monthStart)
   const monthlyViews = viewCount ?? 0
 
+  const isClaimed = listing.listing_tier !== 'unclaimed' && listing.listing_tier != null
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
@@ -66,8 +68,8 @@ export default async function ListingPage({ params, searchParams }: Props) {
           postalCode: listing.zip ?? undefined,
         }
       : undefined,
-    telephone: listing.phone ?? undefined,
-    url: listing.website ?? undefined,
+    telephone: isClaimed ? (listing.phone ?? undefined) : undefined,
+    url: isClaimed ? (listing.website ?? undefined) : undefined,
     medicalSpecialty: 'PhysicalTherapy',
     availableService: (listing.conditions_treated ?? []).map((c) => ({
       '@type': 'MedicalTherapy',
