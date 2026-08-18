@@ -14,7 +14,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
   const supabase = await createServiceClient()
   const { data: listing } = await supabase
     .from('pelvic_floor_pt_listings')
-    .select('id, full_name, city, state, listing_tier, claimed_at')
+    .select('id, slug, full_name, city, state, listing_tier, claimed_at')
     .eq('id', id)
     .single()
 
