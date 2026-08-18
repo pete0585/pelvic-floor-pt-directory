@@ -9,6 +9,7 @@ import { createClient } from '@supabase/supabase-js'
 interface ClaimProps {
   listing: {
     id: string
+    slug: string
     full_name: string
     city: string
     state: string
@@ -123,7 +124,7 @@ export default function ClaimPageClient({ listing }: ClaimProps) {
           </div>
 
           <Link
-            href={`/listings/${listing.id}?verified=true`}
+            href={`/listings/${listing.slug}?verified=true`}
             className="btn-primary w-full text-center"
           >
             View & Upgrade My Listing
