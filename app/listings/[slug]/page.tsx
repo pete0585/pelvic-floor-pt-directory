@@ -113,6 +113,24 @@ export default async function ListingPage({ params, searchParams }: Props) {
 
           <ListingDetail listing={listing} monthlyViews={monthlyViews} />
 
+          {/* Claim CTA for unclaimed listings */}
+          {!isClaimed && !isUpgraded && (
+            <div className="mt-8 rounded-2xl bg-teal-50 border border-teal-200 p-6 flex items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-teal-700">Is this your practice?</p>
+                <p className="text-sm text-teal-600 mt-1">
+                  Claim your free listing to add contact info, get a verified badge, and be found by more patients.
+                </p>
+              </div>
+              <Link
+                href={`/claim/${listing.id}`}
+                className="btn-primary shrink-0"
+              >
+                Claim Listing
+              </Link>
+            </div>
+          )}
+
           {/* Upgrade section for claimed free listings */}
           {isUpgraded && listing.listing_tier === 'free' && (
             <div className="mt-8 card p-8 border-2 border-teal-100">
