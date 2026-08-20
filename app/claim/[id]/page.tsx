@@ -12,10 +12,12 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
   const { id } = await params
 
   const supabase = await createServiceClient()
+  // Accept either UUID id or slug
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
   const { data: listing } = await supabase
     .from('pelvic_floor_pt_listings')
     .select('id, slug, full_name, city, state, listing_tier, claimed_at')
-    .eq('id', id)
+    .eq(isUUID ? 'id' : 'slug', id)
     .single()
 
   if (!listing) notFound()
