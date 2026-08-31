@@ -42,8 +42,8 @@ Copy `.env.example` to `.env.local` and fill in:
 | `NEXT_PUBLIC_SITE_URL` | Production URL: `https://www.pelvicfloordirectory.com` |
 | `STRIPE_SECRET_KEY` | Stripe restricted key (`rk_live_...`) |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret (`whsec_...`) |
-| `STRIPE_VERIFIED_PRICE_ID` | `price_1TddtWGzK9SibluelmcU2dI5` ($99/yr) |
-| `STRIPE_FEATURED_PRICE_ID` | `price_1TddtWGzK9SiblueXAuljloW` ($199/yr) |
+| `STRIPE_VERIFIED_PRICE_ID` | `price_REPLACE_ME` ($99/yr) |
+| `STRIPE_FEATURED_PRICE_ID` | `price_REPLACE_ME` ($199/yr) |
 | `RESEND_API_KEY` | Resend API key |
 | `RESEND_FROM_EMAIL` | `hello@mail.pelvicfloordirectory.com` |
 | `ADMIN_EMAILS` | Comma-separated admin emails |
