@@ -2,9 +2,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.pelvicfloordirectory.com"
+
 export const metadata: Metadata = {
   title: "Best Pelvic Floor PT in Colorado Springs, Colorado | Pelvic Floor PT Directory",
   description: "Find pelvic floor pt in Colorado Springs, Colorado. 20+ listed. Filter by city and compare providers.",
+  alternates: { canonical: `${BASE}/pelvic-floor-pt/colorado-springs-colorado` },
 }
 
 async function getListings() {
