@@ -60,13 +60,22 @@ export default async function HomePage() {
           </div>
 
           <h1 className="text-4xl font-bold text-stone-800 leading-tight sm:text-5xl md:text-6xl text-balance tracking-tight">
-            Find a pelvic floor PT{' '}
-            <span className="text-teal">who gets it</span>
+            Find trusted pelvic floor PTs near you
           </h1>
 
           <p className="mt-5 text-lg text-stone-500 max-w-2xl mx-auto leading-relaxed">
-            You shouldn&apos;t have to explain your symptoms to a generalist. Find a pelvic floor
-            specialist who treats exactly what you&apos;re dealing with — and actually has availability.
+            Browse verified pelvic floor physical therapists by specialty and location — and connect directly. Free, always.
+          </p>
+          <p className="text-sm text-gray-500 mt-4">
+            Are you a pelvic floor PT?{' '}
+            <a
+              href="https://studiozerohq.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:opacity-80"
+            >
+              List your practice free →
+            </a>
           </p>
 
           <div className="mt-8 flex justify-center">
