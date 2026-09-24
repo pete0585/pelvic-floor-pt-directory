@@ -4,6 +4,7 @@ import { ShieldCheck, Search, ArrowRight, Video, Home, CheckCircle, Heart, Award
 import SearchBar from '@/components/SearchBar'
 import ListingCard from '@/components/ListingCard'
 import { getFeaturedListings, getListingCount } from '@/lib/data'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 export const metadata: Metadata = {
   title: 'Find a Pelvic Floor Physical Therapist Near You | PelvicFloorPTDirectory.com',
