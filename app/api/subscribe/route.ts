@@ -1,51 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase/server'
+
+export const runtime = 'nodejs'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const NICHE = 'pelvic-floor-pt' as const
+const NEWSLETTER_NAME = 'Floor Notes' as const
+const CONFIRM_URL_BASE = 'https://www.pelvicfloordirectorynow.com/newsletter/confirm'
+const DASHBOARD_URL = 'https://aidam.thestrategicveteran.com'
 
 export async function POST(req: NextRequest) {
+  let email: string, first_name: string | undefined
   try {
-    const { email, directory } = await req.json()
+    const body = await req.json()
+    email = body.email
+    first_name = body.first_name
+  } catch {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
-    }
+  if (!email || typeof email !== 'string' || !EMAIL_RE.test(email.trim())) {
+    return NextResponse.json({ error: 'Valid email address required' }, { status: 400 })
+  }
 
-    const supabase = await createServiceClient()
+  const token = process.env.NEWSLETTER_SUBMIT_TOKEN
+  if (!token) {
+    console.error('NEWSLETTER_SUBMIT_TOKEN not configured')
+    return NextResponse.json({ error: 'Service temporarily unavailable' }, { status: 503 })
+  }
 
-    await supabase.from('email_subscribers').upsert(
-      { email: email.toLowerCase(), directory: directory ?? 'pelvic-floor-pt' },
-      { onConflict: 'email,directory', ignoreDuplicates: true },
-    )
-
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'hello@mail.pelvicfloordirectory.com'
-
-    await fetch('https://api.resend.com/emails', {
+  try {
+    const res = await fetch(`${DASHBOARD_URL}/api/newsletter/submit`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'curl/8.5.0',
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({
-        from: `PelvicFloorPT Directory <${fromEmail}>`,
-        to: [email],
-        subject: 'You\'re subscribed to PelvicFloorPTDirectory.com',
-        html: `
-          <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-            <h2 style="color: #1A6B6B; margin-bottom: 8px;">You're in!</h2>
-            <p style="color: #3D3830;">
-              Thanks for subscribing to PelvicFloorPTDirectory.com. You'll get occasional pelvic health tips and updates on new therapists in your area.
-            </p>
-            <p style="color: #908980; font-size: 13px; margin-top: 24px;">
-              To unsubscribe, reply "unsubscribe" to this email.
-            </p>
-          </div>
-        `,
+        email: email.trim().toLowerCase(),
+        first_name: first_name?.trim() || undefined,
+        niche: NICHE,
+        newsletter_name: NEWSLETTER_NAME,
+        confirm_url_base: CONFIRM_URL_BASE,
       }),
     })
-
+    const data = await res.json()
+    if (!res.ok) {
+      return NextResponse.json({ error: data.error ?? 'Subscription failed' }, { status: res.status })
+    }
     return NextResponse.json({ success: true })
-  } catch (err) {
-    console.error('Subscribe error:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  } catch (e) {
+    console.error('Subscribe error:', e)
+    return NextResponse.json({ error: 'Service temporarily unavailable' }, { status: 503 })
   }
 }
