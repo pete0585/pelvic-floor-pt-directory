@@ -261,12 +261,7 @@ export default async function HomePage() {
             >
               Get Listed Free
             </Link>
-            <Link
-              href="/submit#pricing"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/50 px-8 py-4 text-base font-semibold text-white hover:border-white transition-colors"
-            >
-              View Pricing
-            </Link>
+            
           </div>
         </div>
       </section>
