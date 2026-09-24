@@ -6,7 +6,6 @@ import ListingDetail from '@/components/ListingDetail'
 import { ViewTracker } from '@/components/ViewTracker'
 import { getListingBySlug } from '@/lib/data'
 import { createServiceClient } from '@/lib/supabase/server'
-import { createCheckoutSession } from './actions'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -113,6 +112,17 @@ export default async function ListingPage({ params, searchParams }: Props) {
 
           <ListingDetail listing={listing} monthlyViews={monthlyViews} />
 
+
+      {/* Studio Zero provider callout */}
+      <div className="mt-8 rounded-xl bg-gray-50 border border-gray-200 p-5">
+        <p className="text-sm text-gray-600">
+          <span className="font-semibold text-gray-800">Are you a provider listed here?</span>{' '}
+          <a href={`/claim/${listing.id}`} className="underline hover:opacity-80">Claim your free listing</a>
+          {' '}to add your contact details and bio.{' '}
+          <a href="https://studiozerohq.com" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">Studio Zero</a>
+          {' '}helps healthcare providers grow their practice with AI-powered marketing.
+        </p>
+      </div>
           {/* Claim CTA for unclaimed listings */}
           {!isClaimed && !isUpgraded && (
             <div className="mt-8 rounded-2xl bg-teal-50 border border-teal-200 p-6 flex items-center justify-between gap-4">
@@ -132,78 +142,9 @@ export default async function ListingPage({ params, searchParams }: Props) {
           )}
 
           {/* Upgrade section for claimed free listings */}
-          {isUpgraded && listing.listing_tier === 'free' && (
-            <div className="mt-8 card p-8 border-2 border-teal-100">
-              <div className='text-center mb-6'>
-                <div className='text-5xl font-bold text-gray-900'>{monthlyViews}</div>
-                <div className='text-gray-500 mt-1'>people viewed your profile this month</div>
-                <div className='mt-3 text-red-600 font-semibold'>
-                  0 could contact you — your phone and website are hidden
-                </div>
-              </div>
-
-              <div className='space-y-3 mb-8 text-left'>
-                {[
-                  ['Your phone number visible to searchers', 'They can call you directly from your listing'],
-                  ['Your website linked', 'Drive traffic to your practice site'],
-                  ['Your full bio displayed', 'Build trust before they reach out'],
-                  ['Verified badge', 'Stand out from unclaimed profiles'],
-                ].map(([title, sub]) => (
-                  <div key={title} className='flex items-start gap-3'>
-                    <span className='text-green-500 text-lg leading-tight'>✓</span>
-                    <div>
-                      <div className='font-medium text-gray-900'>{title}</div>
-                      <div className='text-sm text-gray-500'>{sub}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
-                <div className="rounded-2xl bg-cream-100 border-2 border-teal-200 p-6 text-left">
-                  <div className="flex items-center gap-2 mb-3">
-                    <ShieldCheck className="h-5 w-5 text-teal" />
-                    <span className="font-bold text-stone-700">Verified</span>
-                  </div>
-                  <div className="text-2xl font-bold text-teal mb-1">$99/yr</div>
-                  <ul className="text-sm text-stone-500 space-y-1 mb-5">
-                    <li>✓ Verified badge</li>
-                    <li>✓ Priority placement</li>
-                    <li>✓ Full profile display</li>
-                    <li>✓ Credential badges</li>
-                    <li>✓ Direct booking CTA</li>
-                  </ul>
-                  <form action={createCheckoutSession.bind(null, listing.id, listing.slug, 'verified')}>
-                    <button type="submit" className="btn-primary w-full">
-                      Upgrade to Verified
-                    </button>
-                  </form>
-                </div>
-
-                <div className="rounded-2xl bg-coral-50 border-2 border-coral-200 p-6 text-left">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Star className="h-5 w-5 text-coral-500" />
-                    <span className="font-bold text-stone-700">Featured</span>
-                  </div>
-                  <div className="text-2xl font-bold text-coral-500 mb-1">$199/yr</div>
-                  <ul className="text-sm text-stone-500 space-y-1 mb-5">
-                    <li>✓ Everything in Verified</li>
-                    <li>✓ Featured placement</li>
-                    <li>✓ Top Provider badge</li>
-                    <li>✓ City page spotlight</li>
-                    <li>✓ Condition page feature</li>
-                  </ul>
-                  <form action={createCheckoutSession.bind(null, listing.id, listing.slug, 'featured')}>
-                    <button type="submit" className="btn-coral w-full">
-                      Upgrade to Featured
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>
   )
 }
+
