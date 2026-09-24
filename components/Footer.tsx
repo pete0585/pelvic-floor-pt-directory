@@ -75,16 +75,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/submit#pricing" className="text-sm text-stone-400 hover:text-teal transition-colors">
-                  Verified Listing ($99/yr)
-                </Link>
-              </li>
-              <li>
-                <Link href="/submit#pricing" className="text-sm text-stone-400 hover:text-teal transition-colors">
-                  Featured Listing ($199/yr)
-                </Link>
-              </li>
-              <li>
                 <a href="https://www.menopausedirectory.co" className="text-sm text-stone-400 hover:text-teal transition-colors" target="_blank" rel="noopener noreferrer">
                   Menopause Directory
                 </a>
