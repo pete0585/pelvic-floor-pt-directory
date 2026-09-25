@@ -7,7 +7,7 @@ const NICHE = 'pelvic-floor-pt' as const
 const DIRECTORY_SLUG = 'pelvic-floor-pt-directory' as const
 const NEWSLETTER_NAME = 'Pelvic Care Postscript' as const
 const CONFIRM_URL_BASE = 'https://pelvicfloordirectory.com/newsletter/confirm'
-const DASHBOARD_URL = 'https://aidam.thestrategicveteran.com'
+const DASHBOARD_URL = 'https://aidam.studiozerohq.com'
 
 export async function POST(req: NextRequest) {
   let email: string, first_name: string | undefined
