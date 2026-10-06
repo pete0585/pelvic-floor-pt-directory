@@ -6,6 +6,7 @@ import { X, Mail } from 'lucide-react'
 export default function NewsletterFooterBar() {
   const [visible, setVisible] = useState(false)
   const [email, setEmail] = useState('')
+  const [website, setWebsite] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function NewsletterFooterBar() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, directory: 'pelvic-floor-pt' }),
+        body: JSON.stringify({ website, email, directory: 'pelvic-floor-pt' }),
       })
       if (res.ok) {
         setStatus('success')
@@ -57,6 +58,7 @@ export default function NewsletterFooterBar() {
           <p className="text-sm font-semibold text-teal-200 shrink-0">You&apos;re in!</p>
         ) : (
           <form onSubmit={handleSubmit} className="flex items-center gap-2 shrink-0">
+        <div aria-hidden="true" style={{position:"absolute",left:"-10000px",width:1,height:1,overflow:"hidden"}}><label>Website<input name="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)} /></label></div>
             <input
               type="email"
               value={email}
