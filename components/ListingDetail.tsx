@@ -126,7 +126,7 @@ export default function ListingDetail({ listing, monthlyViews = 0 }: ListingDeta
             {/* Stats block for claimed listings */}
             {isClaimed && (<></>)}
 
-            {listing.booking_url && (<a href={listing.booking_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full mb-3">
+            {listing.booking_url && (<a data-directory-action="booking_click" href={listing.booking_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full mb-3">
                 <Calendar className="h-4 w-4"/>
                 Book Online
               </a>)}
@@ -136,7 +136,7 @@ export default function ListingDetail({ listing, monthlyViews = 0 }: ListingDeta
                 {formatPhone(listing.phone)}
               </a>)}
 
-            {listing.website && (<a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-teal hover:text-teal-400 transition-colors mt-2">
+            {listing.website && (<a data-directory-action="website_click" href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-teal hover:text-teal-400 transition-colors mt-2">
                 <Globe className="h-4 w-4"/>
                 Visit website
                 <ArrowRight className="h-3.5 w-3.5"/>
